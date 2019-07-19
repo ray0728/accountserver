@@ -1,5 +1,6 @@
 ![travis_ci](https://www.travis-ci.org/ray0728/accountserver.svg?branch=master)
 # accountserver
+## 说明
 账户信息管理服务
 * 通过RESTFUL接口对账户进行增删改查操作
   * 操作结果保存于MySQL当中
