@@ -19,6 +19,7 @@ public class ResultInfo {
     public static final int CODE_OPEN_FILE = 312;
     public static final int CODE_UPLOAD_AVATAR = 313;
     public static final int CODE_CHECK_SUM = 314;
+    public static final int CODE_CHANGE_PASSWORD = 315;
 
     public static enum ErrType {
         SUCCESS,

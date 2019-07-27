@@ -112,17 +112,19 @@ public class Account implements Serializable {
         return roles;
     }
 
-    public void hideSensitiveInfo(){
-        if(roles != null){
+    public void hideSensitiveInfo(boolean keepBaseinfo) {
+        if (roles != null) {
             roles.clear();
         }
-        email = "";
+        if (!keepBaseinfo) {
+            email = "";
+        }
         firsttime = 0;
         lastlogin = 0;
         password = "";
         status = 0;
         times = 0;
-        if(!avatar.isEmpty()){
+        if (!avatar.isEmpty()) {
             avatar = "1";
         }
     }
@@ -157,7 +159,7 @@ public class Account implements Serializable {
 
     public int getMaxLevelRole() {
         int rid = Role.ID_GUEST;
-        if(roles != null) {
+        if (roles != null) {
             for (Role role : roles) {
                 if (role.getRid() > rid) {
                     rid = role.getRid();
@@ -169,16 +171,23 @@ public class Account implements Serializable {
 
     public int getMinLevelRole() {
         int rid = Role.ID_SUPER;
-        if(roles != null) {
+        if (roles != null) {
             for (Role role : roles) {
                 if (role.getRid() < rid) {
                     rid = role.getRid();
                 }
             }
-        }else{
+        } else {
             rid = Role.ID_GUEST;
         }
         return rid;
+    }
+
+    public boolean isSame(Account account){
+        if(account == null){
+            return false;
+        }
+        return uid == account.getUid();
     }
 
     public void reset() {

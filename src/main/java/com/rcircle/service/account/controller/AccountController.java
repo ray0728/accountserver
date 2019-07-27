@@ -91,12 +91,12 @@ public class AccountController {
         } else {
             mAccountService.addRole(account, Role.ID_GUEST);
         }
-        account.setPassword("******");
         if (!checksum.isEmpty() && file != null) {
             String avatarurl = mAccountService.updateAvatar(account.getUid(), checksum, file);
             account.setAvatar(avatarurl);
-            mAccountService.updateAccountInfo(account.getUid(), null, null, null, null, avatarurl);
+            mAccountService.updateAccountInfo(account.getUid(), null, null, null, avatarurl);
         }
+        account.hideSensitiveInfo(true);
         ResultData data = new ResultData();
         data.setCode(ResultInfo.CODE_CREATE_ACCOUNT);
         data.setType(ResultInfo.translate(ResultInfo.ErrType.SUCCESS));
@@ -151,7 +151,7 @@ public class AccountController {
             if (roles != null && roles.length > 0) {
                 mAccountService.addRole(account, roles);
             }
-            account.setPassword("******");
+            account.hideSensitiveInfo(false);
             return ResultInfo.assembleSuccessJson(ResultInfo.CODE_CHANGE_ACCOUNT, "finished", "account", account);
         } else {
             return ResultInfo.assembleJson(ResultInfo.ErrType.INVALID, ResultInfo.CODE_CHANGE_ACCOUNT, "have no enough permission.");
@@ -159,12 +159,11 @@ public class AccountController {
     }
 
     @PutMapping("edit")
-    public String changePassword(Principal principal,
-                                 @RequestParam(name = "email", required = false, defaultValue = "") String email,
-                                 @RequestParam(name = "passwd", required = false, defaultValue = "") String password,
-                                 @RequestParam(name = "signature", required = false, defaultValue = "") String profile,
-                                 @RequestParam(name = "resume", required = false, defaultValue = "") String resume,
-                                 @RequestParam(name = "avatar", required = false, defaultValue = "") String header) {
+    public String changeProifle(Principal principal,
+                                @RequestParam(name = "email", required = false, defaultValue = "") String email,
+                                @RequestParam(name = "signature", required = false, defaultValue = "") String profile,
+                                @RequestParam(name = "resume", required = false, defaultValue = "") String resume,
+                                @RequestParam(name = "avatar", required = false, defaultValue = "") String header) {
         if (principal == null) {
             return ResultInfo.assembleJson(ResultInfo.ErrType.NULLOBJ, ResultInfo.CODE_EDIT_ACCOUNT, "Invalid request parameters.");
         }
@@ -172,27 +171,47 @@ public class AccountController {
         if (account == null) {
             return ResultInfo.assembleJson(ResultInfo.ErrType.INVALID, ResultInfo.CODE_EDIT_ACCOUNT, "Invalid resources.");
         }
-        mAccountService.updateAccountInfo(account.getUid(), email, password, profile, resume, header);
-        account.setPassword("******");
+        mAccountService.updateAccountInfo(account.getUid(), email, profile, resume, header);
+        account.hideSensitiveInfo(true);
         return ResultInfo.assembleSuccessJson(ResultInfo.CODE_EDIT_ACCOUNT, "finished", "account", account);
     }
 
+    @PutMapping("password")
+    public String changePassword(Principal principal,
+                                 @RequestParam(name = "old") String oldPass,
+                                 @RequestParam(name = "new") String newPass) {
+        Account opAccount = mAccountService.getAccount(principal.getName(), 0);
+        if(opAccount == null || oldPass.isEmpty() || newPass.isEmpty() || oldPass.equals(newPass)){
+            return ResultInfo.assembleJson(ResultInfo.ErrType.INVALID, ResultInfo.CODE_CHANGE_PASSWORD, "Invalid resources.");
+        }
+        if(!opAccount.getPassword().equals(oldPass)){
+            return ResultInfo.assembleJson(ResultInfo.ErrType.INVALID, ResultInfo.CODE_CHANGE_PASSWORD, "Invalid resources.");
+        }
+        mAccountService.changePassword(opAccount.getUid(), newPass);
+        opAccount.hideSensitiveInfo(true);
+        return ResultInfo.assembleSuccessJson(ResultInfo.CODE_EDIT_ACCOUNT, "finished", "account", opAccount);
+    }
+
     @GetMapping("info")
-    public String getInfo(HttpServletRequest request,
+    public String getInfo(Principal principal, HttpServletRequest request,
                           @RequestParam(name = "username", required = false, defaultValue = "") String username,
                           @RequestParam(name = "uid", required = false, defaultValue = "0") int uid) {
         String ret = null;
+        Account opAccount = null;
+        if (principal != null) {
+            opAccount = mAccountService.getAccount(principal.getName(), 0);
+        }
         if (username.isEmpty() && uid == 0) {
             List<Account> accounts = mAccountService.getAllAccounts();
-            for(Account account: accounts){
-                account.hideSensitiveInfo();
+            for (Account account : accounts) {
+                account.hideSensitiveInfo(false);
             }
             ret = accounts == null ? null : JSONArray.toJSONString(accounts);
         } else {
             Account account = mAccountService.getAccount(username, uid);
             String securityFlag = request.getHeader("rc-account-security");
             if (account != null && securityFlag == null) {
-                account.hideSensitiveInfo();
+                account.hideSensitiveInfo(account.isSame(opAccount));
             }
             ret = account == null ? null : JSONObject.toJSONString(account);
         }
@@ -200,12 +219,12 @@ public class AccountController {
     }
 
     @GetMapping("avatar/{uid}")
-    public ResponseEntity getAvatar(Principal principal, @PathVariable("uid") int uid){
+    public ResponseEntity getAvatar(Principal principal, @PathVariable("uid") int uid) {
         Account account = mAccountService.getAccount(null, uid);
         String errinfo = null;
         try {
-            return  account.getAvatar().isEmpty() ? null: createResponseEntity("image/jpg",  account.getAvatar() + File.separatorChar + "avatar");
-        }catch (IOException e){
+            return account.getAvatar().isEmpty() ? null : createResponseEntity("image/jpg", account.getAvatar() + File.separatorChar + "avatar");
+        } catch (IOException e) {
             errinfo = e.getMessage();
         }
         return ResponseEntity.status(404).body(errinfo);
@@ -234,7 +253,7 @@ public class AccountController {
             return ResultInfo.assembleJson(ResultInfo.ErrType.INVALID, ResultInfo.CODE_REFRESH_ACCOUNT, "Invalid resources.");
         }
         mAccountService.updateAccountTimeInfo(account);
-        account.setPassword("******");
+        account.hideSensitiveInfo(false);
         return ResultInfo.assembleSuccessJson(ResultInfo.CODE_REFRESH_ACCOUNT, "finished", "account", account);
     }
 
@@ -243,7 +262,7 @@ public class AccountController {
         Account account = null;
         if (principal != null) {
             account = mAccountService.getAccount(principal.getName(), 0);
-            account.setPassword("******");
+            account.hideSensitiveInfo(true);
         }
         return account == null ? "" : JSONObject.toJSONString(account);
     }

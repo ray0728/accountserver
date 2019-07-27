@@ -109,7 +109,14 @@ public class AccountService {
         return mapper.setAccountStatus(account.getUid(), status);
     }
 
-    public int updateAccountInfo(int uid, String email, String password, String signature, String resume, String avatar) {
+    public int changePassword(int uid, String password){
+        Account tmpAccount = new Account();
+        tmpAccount.setUid(uid);
+        tmpAccount.setPassword(password);
+        return mapper.updateAccount(tmpAccount);
+    }
+
+    public int updateAccountInfo(int uid, String email, String signature, String resume, String avatar) {
         Account tmpAccount = new Account();
         tmpAccount.setUid(uid);
         if(email != null) {
@@ -123,9 +130,6 @@ public class AccountService {
         }
         if(avatar != null) {
             tmpAccount.setAvatar(avatar);
-        }
-        if(password != null) {
-            tmpAccount.setPassword(Password.crypt(password));
         }
         return mapper.updateAccount(tmpAccount);
     }
