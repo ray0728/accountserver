@@ -42,16 +42,15 @@ public class AccountController {
         return false;
     }
 
-    @PostMapping("avatar/{uid}")
+    @PostMapping("avatar")
     public String uploadAvatar(Principal principal,
                                MultipartFile file,
-                               @PathVariable("uid") int uid,
                                @RequestParam(name = "checksum") String checksum) {
         Account opAccount = mAccountService.getAccount(principal.getName(), 0);
-        if (opAccount == null || opAccount.getUid() != uid) {
+        if (opAccount == null) {
             return ResultInfo.assembleJson(ResultInfo.ErrType.INVALID, ResultInfo.CODE_UPLOAD_AVATAR, "Invalid resources.");
         }
-        return mAccountService.updateAvatar(uid, checksum, file);
+        return mAccountService.updateAvatar(opAccount.getUid(), checksum, file);
     }
 
 
@@ -92,9 +91,8 @@ public class AccountController {
             mAccountService.addRole(account, Role.ID_GUEST);
         }
         if (!checksum.isEmpty() && file != null) {
-            String avatarurl = mAccountService.updateAvatar(account.getUid(), checksum, file);
-            account.setAvatar(avatarurl);
-            mAccountService.updateAccountInfo(account.getUid(), null, null, null, avatarurl);
+            mAccountService.updateAvatar(account.getUid(), checksum, file);
+            mAccountService.updateAccountInfo(account.getUid(), null, null, null);
         }
         account.hideSensitiveInfo(true);
         ResultData data = new ResultData();
@@ -162,8 +160,7 @@ public class AccountController {
     public String changeProifle(Principal principal,
                                 @RequestParam(name = "email", required = false, defaultValue = "") String email,
                                 @RequestParam(name = "signature", required = false, defaultValue = "") String profile,
-                                @RequestParam(name = "resume", required = false, defaultValue = "") String resume,
-                                @RequestParam(name = "avatar", required = false, defaultValue = "") String header) {
+                                @RequestParam(name = "resume", required = false, defaultValue = "") String resume) {
         if (principal == null) {
             return ResultInfo.assembleJson(ResultInfo.ErrType.NULLOBJ, ResultInfo.CODE_EDIT_ACCOUNT, "Invalid request parameters.");
         }
@@ -171,7 +168,7 @@ public class AccountController {
         if (account == null) {
             return ResultInfo.assembleJson(ResultInfo.ErrType.INVALID, ResultInfo.CODE_EDIT_ACCOUNT, "Invalid resources.");
         }
-        mAccountService.updateAccountInfo(account.getUid(), email, profile, resume, header);
+        mAccountService.updateAccountInfo(account.getUid(), email, profile, resume);
         account.hideSensitiveInfo(true);
         return ResultInfo.assembleSuccessJson(ResultInfo.CODE_EDIT_ACCOUNT, "finished", "account", account);
     }

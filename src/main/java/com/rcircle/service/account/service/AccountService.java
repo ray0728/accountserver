@@ -49,6 +49,8 @@ public class AccountService {
             String message = autoDetectErrorMessageAfterUpload(error);
             if(message != null) {
                 ret = ResultInfo.assembleJson(ResultInfo.ErrType.EXCEPTION, error, message);
+            }else{
+                mapper.updateAvatar(uid, ret);
             }
         } catch (IOException e) {
             ret = ResultInfo.assembleJson(ResultInfo.ErrType.EXCEPTION, 0, e.getMessage());
@@ -116,7 +118,7 @@ public class AccountService {
         return mapper.updateAccount(tmpAccount);
     }
 
-    public int updateAccountInfo(int uid, String email, String signature, String resume, String avatar) {
+    public int updateAccountInfo(int uid, String email, String signature, String resume) {
         Account tmpAccount = new Account();
         tmpAccount.setUid(uid);
         if(email != null) {
@@ -127,9 +129,6 @@ public class AccountService {
         }
         if(resume != null) {
             tmpAccount.setResume(resume);
-        }
-        if(avatar != null) {
-            tmpAccount.setAvatar(avatar);
         }
         return mapper.updateAccount(tmpAccount);
     }

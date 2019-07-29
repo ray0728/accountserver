@@ -130,4 +130,12 @@
         </set>
         WHERE id = #{uid}
     </update>
+
+    <update id="updateAvatar">
+        UPDATE t_account
+        <set>
+            <if test="avatar.length > 0">avatar=#{avatar},</if>
+        </set>
+        WHERE id = #{uid}
+    </update>
 </mapper>
