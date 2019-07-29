@@ -6,6 +6,7 @@ import com.rcircle.service.account.model.Account;
 import com.rcircle.service.account.model.ResultData;
 import com.rcircle.service.account.model.Role;
 import com.rcircle.service.account.service.AccountService;
+import com.rcircle.service.account.util.Password;
 import com.rcircle.service.account.util.ResultInfo;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -178,10 +179,10 @@ public class AccountController {
                                  @RequestParam(name = "old") String oldPass,
                                  @RequestParam(name = "new") String newPass) {
         Account opAccount = mAccountService.getAccount(principal.getName(), 0);
-        if(opAccount == null || oldPass.isEmpty() || newPass.isEmpty() || oldPass.equals(newPass)){
+        if (opAccount == null || oldPass.isEmpty() || newPass.isEmpty() || oldPass.equals(newPass)) {
             return ResultInfo.assembleJson(ResultInfo.ErrType.INVALID, ResultInfo.CODE_CHANGE_PASSWORD, "Invalid resources.");
         }
-        if(!opAccount.getPassword().equals(oldPass)){
+        if (!Password.isSame(oldPass, opAccount.getPassword())) {
             return ResultInfo.assembleJson(ResultInfo.ErrType.INVALID, ResultInfo.CODE_CHANGE_PASSWORD, "Invalid resources.");
         }
         mAccountService.changePassword(opAccount.getUid(), newPass);
