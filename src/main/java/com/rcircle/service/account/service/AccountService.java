@@ -5,7 +5,6 @@ import com.rcircle.service.account.mapper.AccountMapper;
 import com.rcircle.service.account.model.Account;
 import com.rcircle.service.account.model.Role;
 import com.rcircle.service.account.util.NetFile;
-import com.rcircle.service.account.util.Password;
 import com.rcircle.service.account.util.ResultInfo;
 import com.rcircle.service.account.util.SimpleDate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -61,7 +59,6 @@ public class AccountService {
     public long createAccount(Account account) {
         long uid = 0;
         if (mapper.getDetialByName(account.getUsername(), account.getEmail()) == null) {
-            account.setPassword(Password.crypt(account.getPassword()));
             account.setFirsttime(SimpleDate.getUTCTime());
             mapper.create(account);
             uid = account.getUid();
