@@ -1,10 +1,12 @@
 package com.rcircle.service.account.model;
 
+import com.rcircle.service.account.util.Password;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class Account implements Serializable {
     public static final int STATUS_NORMAL = 0;
@@ -23,7 +25,6 @@ public class Account implements Serializable {
     private int times;
     private long lastlogin;
     private List<Role> roles;
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public String getResume() {
         return resume;
@@ -62,7 +63,7 @@ public class Account implements Serializable {
     }
 
     public void setPassword(String password) {
-        this.password = passwordEncoder.encode(password);
+        this.password = Password.self().crypt(password);
     }
 
     public String getEmail() {
@@ -186,15 +187,15 @@ public class Account implements Serializable {
         return rid;
     }
 
-    public boolean isSame(Account account){
-        if(account == null){
+    public boolean isSame(Account account) {
+        if (account == null) {
             return false;
         }
         return uid == account.getUid();
     }
 
-    public boolean isSamePassword(String password){
-        return passwordEncoder.matches(password, this.password);
+    public boolean isSamePassword(String password) {
+        return Password.self().isSame(password, this.password);
     }
 
     public void reset() {
