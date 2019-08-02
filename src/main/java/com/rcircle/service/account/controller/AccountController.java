@@ -44,7 +44,7 @@ public class AccountController {
 
     @PostMapping("avatar")
     public String uploadAvatar(Principal principal,
-                               MultipartFile file,
+                               @RequestParam(name="file") MultipartFile file,
                                @RequestParam(name = "checksum") String checksum) {
         Account opAccount = mAccountService.getAccount(principal.getName(), 0);
         if (opAccount == null) {
