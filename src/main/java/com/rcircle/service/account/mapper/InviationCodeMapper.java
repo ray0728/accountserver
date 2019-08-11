@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface InviationCodeMapper {
-
     public InviationCode getCodeInfo(InviationCode code);
+    public int update(@Param("id")int id, @Param("fuid")int fuid);
 }

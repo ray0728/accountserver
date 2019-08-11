@@ -1,9 +1,7 @@
 package com.rcircle.service.account.controller;
 
 import com.rcircle.service.account.services.InviationCodeService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -16,5 +14,12 @@ public class InvitationCodeController {
     @GetMapping("check_code")
     public int checkCode(String code) {
         return inviationCodeService.getCodeValid(code);
+    }
+
+    @PutMapping("update")
+    public String updateCode(@RequestParam(name = "uid")int uid,
+                          @RequestParam(name="cid")int cid){
+        inviationCodeService.updateCode(cid, uid);
+        return "";
     }
 }

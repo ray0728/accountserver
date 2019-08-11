@@ -12,4 +12,8 @@
         </where>
         ;
     </select>
+
+    <update id="update">
+        UPDATE t_invitation_code SET used = 1,fuid=#{fuid} WHERE id = #{id}
+    </update>
 </mapper>

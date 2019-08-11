@@ -14,10 +14,14 @@ public class InviationCodeService {
         InviationCode inviationCode = new InviationCode();
         inviationCode.setCode(code);
         inviationCode = inviationCodeMapper.getCodeInfo(inviationCode);
-        if(inviationCode != null) {
-            return inviationCode.getUsed();
-        }else{
-            return 1;
+        if (inviationCode != null && inviationCode.getUsed() == 0) {
+            return inviationCode.getId();
+        } else {
+            return 0;
         }
+    }
+
+    public int updateCode(int id, int uid){
+        return inviationCodeMapper.update(id, uid);
     }
 }
