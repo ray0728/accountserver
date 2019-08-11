@@ -17,5 +17,6 @@
         <typeAlias alias="Role" type="com.rcircle.service.account.model.Role"/>
         <typeAlias alias="Group" type="com.rcircle.service.account.model.Group"/>
         <typeAlias alias="GroupMemberMap" type="com.rcircle.service.account.model.GroupMemberMap"/>
+        <typeAlias alias="InviationCode" type="com.rcircle.service.account.model.InviationCode"/>
     </typeAliases>
 </configuration>

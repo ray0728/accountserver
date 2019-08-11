@@ -14,6 +14,7 @@ public class ResourceSecurityAdapter extends ResourceServerConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/account/info", "/account/create").permitAll()
                 .antMatchers(HttpMethod.GET, "/account/avatar/**").permitAll()
+                .antMatchers("/invitation/**").permitAll()
                 .anyRequest()
                 .authenticated();
     }

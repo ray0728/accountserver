@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rcircle.service.account.model.Account;
 import com.rcircle.service.account.model.ResultData;
 import com.rcircle.service.account.model.Role;
-import com.rcircle.service.account.service.AccountService;
+import com.rcircle.service.account.services.AccountService;
 import com.rcircle.service.account.util.ResultInfo;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package com.rcircle.service.account.service;
+package com.rcircle.service.account.services;
 
 import com.rcircle.service.account.mapper.GroupMapper;
 import com.rcircle.service.account.model.Group;
