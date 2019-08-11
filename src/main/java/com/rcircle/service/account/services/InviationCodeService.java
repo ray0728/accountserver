@@ -21,7 +21,7 @@ public class InviationCodeService {
         }
     }
 
-    public int updateCode(int id, int uid){
-        return inviationCodeMapper.update(id, uid);
+    public int updateCode(int id, int uid, String code){
+        return inviationCodeMapper.update(id, uid, code);
     }
 }

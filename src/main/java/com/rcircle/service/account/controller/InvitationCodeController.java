@@ -12,14 +12,15 @@ public class InvitationCodeController {
     private InviationCodeService inviationCodeService;
 
     @GetMapping("check_code")
-    public int checkCode(String code) {
+    public int checkCode(@RequestParam(name = "code") String code) {
         return inviationCodeService.getCodeValid(code);
     }
 
     @PutMapping("update")
-    public String updateCode(@RequestParam(name = "uid")int uid,
-                          @RequestParam(name="cid")int cid){
-        inviationCodeService.updateCode(cid, uid);
+    public String updateCode(@RequestParam(name = "uid") int uid,
+                             @RequestParam(name = "cid") int cid,
+                             @RequestParam(name = "code") String code) {
+        inviationCodeService.updateCode(cid, uid, code);
         return "";
     }
 }

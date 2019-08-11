@@ -99,6 +99,7 @@ public class AccountController {
         data.setCode(ResultInfo.CODE_CREATE_ACCOUNT);
         data.setType(ResultInfo.translate(ResultInfo.ErrType.SUCCESS));
         data.addToMap("account", account);
+        data.addToMap("uid", account.getUid());
         return JSONObject.toJSONString(data);
     }
 

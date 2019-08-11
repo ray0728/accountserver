@@ -14,6 +14,6 @@
     </select>
 
     <update id="update">
-        UPDATE t_invitation_code SET used = 1,fuid=#{fuid} WHERE id = #{id}
+        UPDATE t_invitation_code SET used = 1,fuid=#{fuid} WHERE id = #{id} AND code = #{code}
     </update>
 </mapper>
