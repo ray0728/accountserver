@@ -46,4 +46,6 @@ java -Djava.security.egd=file:/dev/./urandom                \
      -Dspring.datasource.url=$DATABASE_URI                  \
      -Daccount.dir.root=$ACCOUNT_DIR                        \
      -Dspring.profiles.active=$PROFILE                      \
+     -Xdebug -Xnoagent -Djava.compiler=NONE                 \
+      -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=$REMOTE_DEBUG_PORT \
 -jar /usr/local/server/@project.build.finalName@.jar
